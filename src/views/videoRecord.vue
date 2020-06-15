@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'record',
+  name: 'videoRecord',
   mounted() {
     this.getUserMedia();
   },
