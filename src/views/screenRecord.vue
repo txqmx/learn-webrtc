@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'videoRecord',
+  name: 'screenRecord',
   mounted() {
     this.getUserMedia();
   },
@@ -39,7 +39,7 @@ export default {
         },
       };
       const { player } = this.$refs;
-      navigator.mediaDevices.getUserMedia(MediaDevices).then((stream) => {
+      navigator.mediaDevices.getDisplayMedia(MediaDevices).then((stream) => {
         this.stream = stream;
         player.srcObject = stream;
       });

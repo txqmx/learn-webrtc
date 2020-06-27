@@ -1,63 +1,54 @@
 <template>
   <div>
     <div>
-      <video ref="player" autoplay playsinline></video>
-      <el-button @click="startRecord">开始录制</el-button>{{videoBuffer.length}}
+      <el-button @click="getUserMedia">开始录制</el-button>
       <el-button @click="stopRecord">停止录制</el-button>
       <el-button @click="mediaPlay">播放</el-button>
       <el-button @click="downLoad">下载</el-button>
     </div>
-    <video playsinline ref="replay"></video>
+    <audio autoplay controls ref='replay'></audio>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'videoRecord',
-  mounted() {
-    this.getUserMedia();
-  },
+  name: 'audioRecord',
   data() {
     return {
-      videoBuffer: [],
-      stream: '',
+      audioBuffer: [],
+      audioStream: '',
       mediaRecorder: '',
     };
   },
   methods: {
     // 音视频采集
     getUserMedia() {
-      const MediaDevices = { // 对音视频限制
-        // video: true,
-        video: {
-          width: 320,
-          height: 240,
-          frameRate: 18,
-        },
+      const MediaDevices = {
+        video: false,
         audio: {
           noiseSuppression: true,
         },
       };
-      const { player } = this.$refs;
       navigator.mediaDevices.getUserMedia(MediaDevices).then((stream) => {
-        this.stream = stream;
-        player.srcObject = stream;
+        // eslint-disable-next-line prefer-destructuring
+        this.audioStream = stream;
+        this.startRecord(this.audioStream);
       });
     },
     // 开始录制
     startRecord() {
-      this.videoBuffer = [];
+      this.audioBuffer = [];
       const options = {
-        mimeType: 'video/webm;codecs=vp8',
+        mimeType: 'audio/webm',
       };
       if (!MediaRecorder.isTypeSupported(options.mimeType)) {
         console.error(`${options.mimeType} is not supported!`);
       }
-      const mediaRecorder = new MediaRecorder(this.stream, options);
+      const mediaRecorder = new MediaRecorder(this.audioStream, options);
       this.mediaRecorder = mediaRecorder;
       mediaRecorder.ondataavailable = (e) => {
         if (e && e.data && e.data.size > 0) {
-          this.videoBuffer.push(e.data);
+          this.audioBuffer.push(e.data);
         }
       };
       mediaRecorder.start(10);
@@ -68,18 +59,18 @@ export default {
     },
     // 下载
     downLoad() {
-      const blob = new Blob(this.videoBuffer, { type: 'video/webm' });
+      const blob = new Blob(this.audioBuffer, { type: 'audio/mp3' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.style.display = 'none';
-      a.download = 'aaa.webm';
+      a.download = 'aaa.mp3';
       a.click();
     },
     // 播放
     mediaPlay() {
       const { replay } = this.$refs;
-      const blob = new Blob(this.videoBuffer, { type: 'video/webm' });
+      const blob = new Blob(this.audioBuffer, { type: 'audio/mp3' });
       replay.src = window.URL.createObjectURL(blob);
       replay.srcObject = null;
       replay.controls = true;

@@ -16,6 +16,18 @@ const routes = [
     name: 'videoRecord',
     component: () => import('../views/videoRecord.vue'),
   },
+  // 音频录制
+  {
+    path: '/audioRecord',
+    name: 'audioRecord',
+    component: () => import('../views/audioRecord.vue'),
+  },
+  // 屏幕录制
+  {
+    path: '/screenRecord',
+    name: 'screenRecord',
+    component: () => import('../views/screenRecord.vue'),
+  },
   // 截屏
   {
     path: '/screenShot',
