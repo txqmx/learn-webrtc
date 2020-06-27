@@ -10,10 +10,22 @@ const routes = [
     name: 'getStream',
     component: getUserMedia,
   },
+  // 视频录制
   {
-    path: '/record',
-    name: 'record',
-    component: () => import(/* webpackChunkName: "about" */ '../views/videoRecord.vue'),
+    path: '/videoRecord',
+    name: 'videoRecord',
+    component: () => import('../views/videoRecord.vue'),
+  },
+  // 截屏
+  {
+    path: '/screenShot',
+    name: 'screenShot',
+    component: () => import('../views/screenShot.vue'),
+  },
+  {
+    path: '/peerConnection',
+    name: 'peerConnection',
+    component: () => import('../views/peerConnection.vue'),
   },
 ];
 

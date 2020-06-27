@@ -89,12 +89,12 @@ export default {
           noiseSuppression: true,
         },
       };
-      // const { player } = this.$refs;
+      const { player } = this.$refs;
       navigator.mediaDevices.getUserMedia(MediaDevices).then((stream) => {
         // stream 流里面包含 视频轨和音频轨
         const videoTrack = stream.getVideoTracks()[0]; // 获取视频轨道
         this.videoMsg = videoTrack.getSettings();
-        // player.srcObject = stream;
+        player.srcObject = stream;
       });
     },
   },
