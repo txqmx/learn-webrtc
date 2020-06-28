@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: '/getStream',
     name: 'getStream',
     component: getUserMedia,
   },
@@ -33,6 +33,12 @@ const routes = [
     path: '/screenShot',
     name: 'screenShot',
     component: () => import('../views/screenShot.vue'),
+  },
+  // socket
+  {
+    path: '/socket',
+    name: 'socket',
+    component: () => import('../views/socket.vue'),
   },
   {
     path: '/peerConnection',
