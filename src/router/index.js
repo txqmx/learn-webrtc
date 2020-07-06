@@ -5,6 +5,7 @@ import getUserMedia from '../views/getStream.vue';
 Vue.use(VueRouter);
 
 const routes = [
+  // 获取视频流
   {
     path: '/getStream',
     name: 'getStream',
@@ -40,6 +41,13 @@ const routes = [
     name: 'socket',
     component: () => import('../views/socket.vue'),
   },
+  // 播放器
+  {
+    path: '/playerVideo',
+    name: 'playerVideo',
+    component: () => import('../views/playerVideo.vue'),
+  },
+  // p2p
   {
     path: '/peerConnection',
     name: 'peerConnection',

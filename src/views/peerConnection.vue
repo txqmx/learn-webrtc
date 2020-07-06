@@ -1,7 +1,29 @@
 <template>
     <div>
-      <video id="localvideo" autoplay playsinline></video>
-      <video id="remotevideo" autoplay playsinline></video>
+      <el-row>
+        <el-col :span="12">
+          <h2>Local:</h2>
+          <video id="localvideo" autoplay playsinline></video>
+          <h2>Offer SDP</h2>
+          <el-input
+            type="textarea"
+            :rows="10"
+            placeholder="请输入内容"
+            v-model="offer">
+          </el-input>
+        </el-col>
+        <el-col :span="12">
+          <h2>Remote:</h2>
+          <video id="remotevideo" autoplay playsinline></video>
+          <h2>Answer SDP</h2>
+          <el-input
+            type="textarea"
+            :rows="10"
+            placeholder="请输入内容"
+            v-model="answer">
+          </el-input>
+        </el-col>
+      </el-row>
       <div>
         <el-button @click="start">start</el-button>
         <el-button @click="call">call</el-button>
@@ -24,6 +46,8 @@ export default {
       remoteVideo: '',
       pc1: '',
       pc2: '',
+      offer: '',
+      answer: ''
     };
   },
   mounted() {
@@ -74,6 +98,7 @@ export default {
     },
     getOffer(desc) {
       this.pc1.setLocalDescription(desc);
+      this.offer = desc.sdp
       // send desc to signal
       // receive desc from signal
       this.pc2.setRemoteDescription(desc);
@@ -81,6 +106,7 @@ export default {
     },
     getAnswer(desc) {
       this.pc2.setLocalDescription(desc);
+      this.answer = desc.sdp
       this.pc1.setRemoteDescription(desc);
     },
     hangUp() {
