@@ -53,6 +53,12 @@ const routes = [
     name: 'peerConnection',
     component: () => import('../views/peerConnection.vue'),
   },
+  // peerConnection1
+  {
+    path: '/peerConnection1',
+    name: 'peerConnection1',
+    component: () => import('../views/peerConnection1.vue'),
+  },
 ];
 
 const router = new VueRouter({

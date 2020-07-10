@@ -8,7 +8,8 @@
       <router-link to="/screenRecord">屏幕录制</router-link> |
       <router-link to="/socket">socket</router-link> |
       <router-link to="/playerVideo">播放器</router-link>|
-      <router-link to="/peerConnection">peerConnection</router-link>
+      <router-link to="/peerConnection">peerConnection</router-link>|
+      <router-link to="/peerConnection1">peerConnection1</router-link>
     </div>
     <router-view/>
   </div>
