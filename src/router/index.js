@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import getUserMedia from '../views/getStream.vue';
 
 Vue.use(VueRouter);
 
@@ -9,7 +8,7 @@ const routes = [
   {
     path: '/getStream',
     name: 'getStream',
-    component: getUserMedia,
+    component: () => import('../views/getStream.vue'),
   },
   // 视频录制
   {
@@ -47,17 +46,17 @@ const routes = [
     name: 'playerVideo',
     component: () => import('../views/playerVideo.vue'),
   },
-  // p2p
+  // p2p 远端
   {
-    path: '/peerConnection',
-    name: 'peerConnection',
-    component: () => import('../views/peerConnection.vue'),
+    path: '/peerRemote',
+    name: 'peerRemote',
+    component: () => import('../views/peerRemote.vue'),
   },
-  // peerConnection1
+  // p2p 本地
   {
-    path: '/peerConnection1',
-    name: 'peerConnection1',
-    component: () => import('../views/peerConnection1.vue'),
+    path: '/peerLocal',
+    name: 'peerLocal',
+    component: () => import('../views/peerLocal.vue'),
   },
 ];
 

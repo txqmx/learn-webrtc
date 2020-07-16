@@ -38,7 +38,7 @@
     console.error('Failed to get Media Stream!', err);
   }
   export default {
-    name: 'peerConnection1',
+    name: 'peerLocal',
     data() {
       return {
         localStream: '',

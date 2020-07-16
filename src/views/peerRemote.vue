@@ -23,7 +23,7 @@ function handleError(err) {
   console.error('Failed to get Media Stream!', err);
 }
 export default {
-  name: 'peerConnection',
+  name: 'peerRemote',
   data() {
     return {
       localStream: '',

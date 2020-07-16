@@ -7,9 +7,9 @@
       <router-link to="/audioRecord">音频录制</router-link> |
       <router-link to="/screenRecord">屏幕录制</router-link> |
       <router-link to="/socket">socket</router-link> |
-      <router-link to="/playerVideo">播放器</router-link>|
-      <router-link to="/peerConnection">peerConnection</router-link>|
-      <router-link to="/peerConnection1">peerConnection1</router-link>
+      <router-link to="/playerVideo">播放器video.js</router-link>|
+      <router-link to="/peerLocal">peer 本地</router-link>|
+      <router-link to="/peerRemote">peer 远端</router-link>
     </div>
     <router-view/>
   </div>
