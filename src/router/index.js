@@ -58,6 +58,12 @@ const routes = [
     name: 'peerLocal',
     component: () => import('../views/peerLocal.vue'),
   },
+  // datachennel 聊天
+  {
+    path: '/dataChannel',
+    name: 'dataChannel',
+    component: () => import('../views/dataChannel.vue'),
+  },
 ];
 
 const router = new VueRouter({

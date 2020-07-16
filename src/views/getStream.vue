@@ -57,7 +57,7 @@ export default {
       audioInput: [],
       audioOutput: [],
       videoInput: [],
-      videoStream: '',
+      videoStream: '', // 获取的媒体流
       videoMsg: '',
     };
   },
