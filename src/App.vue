@@ -10,7 +10,9 @@
       <router-link to="/playerVideo">播放器video.js</router-link>|
       <router-link to="/peerLocal">peer 本地视频</router-link>|
       <router-link to="/peerRemote">peer 远端视频</router-link>|
-      <router-link to="/dataChannel">peer 实时聊天</router-link>
+      <router-link to="/dataChannel">peer 实时聊天</router-link>|
+      <router-link to="/whiteboard">本地白板</router-link>|
+      <router-link to="/palette">远端白板</router-link>
     </div>
     <router-view/>
   </div>

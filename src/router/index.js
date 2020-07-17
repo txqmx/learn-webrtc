@@ -64,6 +64,18 @@ const routes = [
     name: 'dataChannel',
     component: () => import('../views/dataChannel.vue'),
   },
+  // 白板
+  {
+    path: '/whiteboard',
+    name: 'whiteboard',
+    component: () => import('../views/whiteboard.vue'),
+  },
+  // 白板远端
+  {
+    path: '/palette',
+    name: 'palette',
+    component: () => import('../views/palette.vue'),
+  },
 ];
 
 const router = new VueRouter({

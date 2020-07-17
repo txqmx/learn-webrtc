@@ -1,48 +1,93 @@
 <template>
-  <div style="margin: 20px">
-    <el-form :inline="true">
-      <el-form-item label="UserName">
-        <el-input v-model="username"></el-input>
-      </el-form-item>
-      <el-form-item label="room">
-        <el-input v-model="roomId"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="connect">Connect</el-button>
-        <el-button @click="leave">Leave</el-button>
-      </el-form-item>
-    </el-form>
-    <div class="content">
-      <label>聊天: </label><br>
-      <div v-html = 'output' class="output"></div>
-      <el-input type="textarea"  v-model="input" rows="2"></el-input>
+  <div>
+    <div class="paleList">
+      <ul>
+        <li v-for="v in handleList" :key="v.type">
+          <el-color-picker v-model="color" show-alpha v-if="v.type === 'color'" @change="colorChange"></el-color-picker>
+          <el-button :disabled="v.type === 'cancel' ? allowHangup || allowCancel:
+                            v.type === 'go' ? allowHangup || allowGo
+                            :allowHangup"
+                  @click="handleClick(v)"
+                   size="mini"
+                  v-if="!['color', 'lineWidth', 'polygon'].includes(v.type)"
+          >
+            {{v.name}}
+          </el-button>
+          <el-popover
+            placement="top"
+            width="400"
+            trigger="click"
+            v-if="v.type === 'polygon'"
+          >
+            <el-input-number v-model="sides" controls-position="right" @change="sidesChange" :min="3" :max="10"></el-input-number>
+            <el-button size="mini" slot="reference" :disabled="allowHangup" @click="handleClick(v)" >{{v.name}}</el-button>
+          </el-popover>
+          <el-popover
+            placement="top"
+            width="400"
+            trigger="click"
+            v-if="v.type === 'lineWidth'"
+          >
+            <el-slider v-model="lineWidth" :max=20 @change="lineWidthChange"></el-slider>
+            <el-button size="mini" slot="reference" :disabled="allowHangup">{{v.name}} <i>{{lineWidth + 'px'}}</i></el-button>
+          </el-popover>
+        </li>
+      </ul>
     </div>
-    <div class="btn">
-      <el-button type="success" @click="send">发送</el-button>
+    <div class="content">
+      <h2>白板:</h2>
+      <canvas width="400" height="300" ref="canvas"></canvas>
+      <div class="btn">
+        <el-button @click="connect">call</el-button>
+        <el-button @click="leave">Leave</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import {Palette} from "../utils/palette";
 export default {
-  name: 'dataChannel',
+  name: 'palette',
   data() {
     return {
       socket: '',
-      btnConn: false,
       pc: '',
+      dc: '',
       state: '',
       username: '',
       roomId: '111111',
-      input: '',
-      output: '',
-      dc: ''
+      // 画板
+      allowCall: true,
+      allowHangup: true,
+      handleList: [
+        {name: '圆', type: 'arc'},
+        {name: '线条', type: 'line'},
+        {name: '矩形', type: 'rect'},
+        {name: '多边形', type: 'polygon'},
+        {name: '橡皮擦', type: 'eraser'},
+        {name: '撤回', type: 'cancel'},
+        {name: '前进', type: 'go'},
+        {name: '清屏', type: 'clear'},
+        {name: '线宽', type: 'lineWidth'},
+        {name: '颜色', type: 'color'}
+      ],
+      color: 'rgba(0, 0, 0, 1)',
+      currHandle: 'line',
+      lineWidth: 5,
+      palette: null, // 画板
+      allowCancel: true,
+      allowGo: true,
+      sides: 3
     };
   },
   methods: {
     // 创建信令连接，初始化socket
     connect(){
       this.socket = io.connect('http://0.0.0.0:80')
+      this.initPalette();
+      this.allowCall = true;
+      this.allowHangup = false;
 
       this.socket.on('joined', (roomId, id) => {
         console.log('receive joined message:', roomId, id);
@@ -183,7 +228,10 @@ export default {
     dataChannelMsg(e){
       let msg = e.data;
       if(msg){
-        this.output = `${this.output + msg}<br>`;
+        console.log(e.data);
+        let [type, ...arr] = JSON.parse(e.data);
+        // console.log('onmessage', type, arr);
+        this.palette[type](...arr);
       }else{
         console.error('received msg is null');
       }
@@ -193,31 +241,75 @@ export default {
       let readyState = this.dc.readyState;
       console.log('Send channel state is: ' + readyState);
     },
-    // dataChannel 消息发送
-    send(){
-      const data = `${this.username}:${this.input}`;
-      this.dc.send(data)
-      this.output = `${this.output + data}<br>`;
-      this.input = '';
-    }
+
+    // 画板操作
+    initPalette() {
+      this.palette = new Palette(this.$refs['canvas'], {
+        drawColor: this.color,
+        drawType: this.currHandle,
+        lineWidth: this.lineWidth,
+        allowCallback: this.allowCallback,
+        moveCallback: this.moveCallback
+      });
+    },
+    moveCallback(...arr) { // 同步到对方
+      // console.log('moveCallback', arr);
+      console.log(arr);
+      if(this.dc){
+        this.dc.send(JSON.stringify(arr));
+      }
+    },
+    allowCallback(cancel, go) {
+      this.allowCancel = !cancel;
+      this.allowGo = !go;
+    },
+    sidesChange() {
+      this.palette.changeWay({sides: this.sides});
+    },
+    colorChange() {
+      this.palette.changeWay({color: this.color});
+    },
+    lineWidthChange() {
+      this.palette.changeWay({lineWidth: this.lineWidth});
+    },
+    handleClick(v) {
+      if (['cancel', 'go', 'clear'].includes(v.type)) {
+        this.palette[v.type]();
+        return;
+      }
+      this.palette.changeWay({type: v.type});
+      if (['color', 'lineWidth'].includes(v.type)) return;
+      this.currHandle = v.type;
+    },
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.paleList{
+  margin-top: 20px;
+  display: inline-block;
+  li{
+    list-style: none;
+    text-decoration: none;
+    margin: 10px;
+  }
+}
 .content{
+  margin-left: 50px;
   display: inline-block;
-  width: 500px;
-}
-.output{
-  height: 117px;
-  border: 1px solid #DCDFE6;
-  border-radius: 4px;
-  overflow: auto;
-}
-.btn{
-  vertical-align: bottom;
-  display: inline-block;
-  margin-left: 10px;
+  canvas{
+    border: 1px solid #000;
+  }
+  video{
+    border: 1px solid #000;
+    width: 400px;
+    height: 300px;
+  }
+  .btn{
+    display: inline-block;
+    vertical-align: bottom;
+    margin-left: 20px;
+  }
 }
 </style>
